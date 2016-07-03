@@ -1,0 +1,6 @@
+[package]
+name = "masa"
+version = "0.1.0"
+authors = ["Jens Mikkelsen <jbmikk@gmail.com>"]
+
+[dependencies]
