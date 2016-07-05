@@ -1,7 +1,8 @@
 use std::net::UdpSocket;
 use std::io;
+use std::env;
 
-fn reply() -> Result<(), io::Error> {
+fn listen() -> Result<(), io::Error> {
     let socket = try!(UdpSocket::bind("127.0.0.1:34254"));
 
     // read from the socket
@@ -15,15 +16,35 @@ fn reply() -> Result<(), io::Error> {
     buf.reverse();
     try!(socket.send_to(buf, &src));
 
+    println!("Listen");
     return Ok(());
+}
+
+fn unknown() -> Result<(), io::Error> {
+    println!("Unknown command");
+    return Ok(());
+}
+
+fn run_command(command: &str) {
+
+    println!("Command: {}", command);
+    let result = match command {
+        "listen" => listen(),
+        _ => unknown()
+    };
+
+    match result {
+        Ok(_) => println!("OK"),
+        Err(x) => println!("Error! {}", x)
+    }
 }
 
 fn main() {
 
-    match reply() {
-        Ok(_) => println!("Replied"),
-        Err(x) => println!("Error! {}", x)
+    if let Some(command) = env::args().nth(1) {
+        run_command(&command);
+    } else {
+        println!("Es una masa!");
     }
 
-    println!("Es una masa!");
 }
