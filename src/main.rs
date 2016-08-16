@@ -16,7 +16,18 @@ fn listen() -> Result<(), io::Error> {
     buf.reverse();
     try!(socket.send_to(buf, &src));
 
-    println!("Listen");
+    return Ok(());
+}
+
+fn broadcast() -> Result<(), io::Error> {
+    let socket = try!(UdpSocket::bind("127.0.0.1:34255"));
+    
+    try!(socket.set_broadcast(true));
+
+    let buf = [1,2,3,4,5,6,7,8,9];
+
+    try!(socket.send_to(&buf, "127.255.255.255:34254"));
+
     return Ok(());
 }
 
@@ -30,6 +41,7 @@ fn run_command(command: &str) {
     println!("Command: {}", command);
     let result = match command {
         "listen" => listen(),
+        "broadcast" => broadcast(),
         _ => unknown()
     };
 
